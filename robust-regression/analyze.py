@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from csv import DictReader
+
 from src.metrics import paired_ratio
 from src.simulation import save_csv, save_json
 
@@ -41,9 +43,32 @@ def figure_a(runs):
     Choose all filtering, reshaping, axes, labels, scales, colors, and other
     formatting. Do not average replicate ratios or save files here.
     """
-    # BEGIN TASK FIGURE_A
-    raise NotImplementedError('Reshape paired results and design figure A.')
-    # END TASK FIGURE_A
+    with open('results/runs.csv', mode='r', newline='', encoding='utf-8') as csvfile:
+        # Initialize the DictReader
+        reader = DictReader(csvfile)
+
+        LAD_coeff_MSE = []
+        OLS_coeff_MSE = []
+        # Iterate through the rows
+        for row in reader:
+            # Access data using the column headers as dictionary keys
+            if row["experiment"] != "A":
+                continue
+
+            coeffMSE = row["coefficient_error"]
+
+            if row["method"] == "LAD":
+                LAD_coeff_MSE.append(coeffMSE)
+            elif row["method"] == "OLS":
+                OLS_coeff_MSE.append(coeffMSE)
+            else:
+                raise "Uh-oh"
+            
+    reader = DictReader
+
+    fig, ax = plt.subplots()
+
+    plt.plot()
 
 
 def figure_b(summary):
