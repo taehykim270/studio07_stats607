@@ -55,9 +55,8 @@ def figure_b(summary):
     Choose all data preparation, axes, labels, legends, scales, and styling.
     Do not save files here.
     """
-    # BEGIN TASK FIGURE_B
-    raise NotImplementedError('Prepare summary data and design figure B.')
-    # END TASK FIGURE_B
+    # 1. Data preparation
+    data = summary[summary["experiment"] == "B"].sort_values(["rho", "method"])
 
 
 def main():
