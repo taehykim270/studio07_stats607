@@ -26,9 +26,30 @@ def summarize(runs):
     MCSE is the sample SD divided by sqrt(the number of nonmissing losses).
     Report failures: n_total - n_ok. Do not average over scenarios.
     """
-    # BEGIN TASK SUMMARY
-    raise NotImplementedError('Aggregate your raw results and compute Monte Carlo standard errors.')
-    # END TASK SUMMARY
+    group_cols = [
+        "study_id", "scenario_id", "experiment", "n", "p", 
+        "gamma", "rho", "error_distribution", "method"
+    ]
+    
+    summary = runs.groupby(group_cols).agg(
+        n_total=("coefficient_error", "size"),
+        n_ok=("coefficient_error", "count"),
+        coefficient_mse=("coefficient_error", "mean"),
+        prediction_mse=("prediction_error", "mean"),
+        c_sd=("coefficient_error", "std"),
+        p_sd=("prediction_error", "std")
+    ).reset_index()
+
+    # Calculate failures and Monte Carlo Standard Errors (MCSE)
+    summary["failures"] = summary["n_total"] - summary["n_ok"]
+    summary["coefficient_mcse"] = summary["c_sd"] / np.sqrt(summary["n_ok"])
+    summary["prediction_mcse"] = summary["p_sd"] / np.sqrt(summary["n_ok"])
+
+    # Drop the temporary standard deviation columns
+    summary = summary.drop(columns=["c_sd", "p_sd"])
+
+    return summary
+
 
 
 def figure_a(runs):
